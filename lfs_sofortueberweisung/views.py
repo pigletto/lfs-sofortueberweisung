@@ -2,7 +2,7 @@ import hashlib
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 
@@ -22,7 +22,6 @@ def success_notification(request, order_id, security_hash):
     calculated_security_hash = hashlib.md5(key).hexdigest()
 
     logger.info('security_hash: %s, calculated: %s' % (security_hash, calculated_security_hash))
-    print 'security_hash: %s, calculated: %s' % (security_hash, calculated_security_hash)
 
     if calculated_security_hash != security_hash:
         raise Http404
@@ -30,4 +29,5 @@ def success_notification(request, order_id, security_hash):
     order.state = PAID
     order.save()
     lfs.core.signals.order_paid.send({"order": order, "request": request})
-    return redirect(reverse('lfs_thank_you'))
+    return HttpResponse('OK')
+    # return redirect(reverse('lfs_thank_you'))
