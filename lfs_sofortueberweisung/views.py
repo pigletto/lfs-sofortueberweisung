@@ -11,12 +11,18 @@ from lfs.order.models import Order
 from lfs.order.settings import PAID
 
 
+import logging
+logger = logging.getLogger(__name__)
+
 @csrf_exempt
 def success_notification(request, order_id, security_hash):
     order = get_object_or_404(Order, pk=order_id)
 
     key = '%s-%s-%s' % (settings.SECRET_KEY, order.pk, order.price)
     calculated_security_hash = hashlib.md5(key).hexdigest()
+
+    logger.info('security_hash: %s, calculated: %s' % (security_hash, calculated_security_hash))
+    print 'security_hash: %s, calculated: %s' % (security_hash, calculated_security_hash)
 
     if calculated_security_hash != security_hash:
         raise Http404
