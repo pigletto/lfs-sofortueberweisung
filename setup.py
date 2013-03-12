@@ -27,5 +27,7 @@ setup(name='lfs_sofortueberweisung',
       zip_safe=False,
       install_requires=[
         'setuptools',
+        'requests',
+        'lxml'
       ],
       )
