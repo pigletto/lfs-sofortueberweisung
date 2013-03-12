@@ -25,9 +25,9 @@ def success_notification(request, order_id, security_hash):
 
     if calculated_security_hash != security_hash:
         raise Http404
-
-    order.state = PAID
-    order.save()
-    lfs.core.signals.order_paid.send({"order": order, "request": request})
+    if order.state != PAID:
+        order.state = PAID
+        order.save()
+        lfs.core.signals.order_paid.send({"order": order, "request": request})
     return HttpResponse('OK')
     # return redirect(reverse('lfs_thank_you'))
